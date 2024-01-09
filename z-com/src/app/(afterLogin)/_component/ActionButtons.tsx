@@ -10,8 +10,8 @@ type Props = {
 
 export default function ActionButtons({ white }: Props) {
   const commented = false;
-  const reposted = true;
-  const linked = true;
+  const reposted = false;
+  const linked = false;
 
   const onClickComment = () => {};
   const onClickRepost = () => {};
