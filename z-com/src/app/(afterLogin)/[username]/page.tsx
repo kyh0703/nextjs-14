@@ -1,6 +1,6 @@
 import style from './profile.module.css';
 import Post from '@/app/(afterLogin)/_component/Post';
-
+import BackButton from '@/app/(afterLogin)/_component/BackButton';
 export default function Profile() {
   const user = {
     id: 'zerohch0',
@@ -11,7 +11,7 @@ export default function Profile() {
   return (
     <main className={style.main}>
       <div className={style.header}>
-        {/* <BackButton /> */}
+        <BackButton />
         <h3 className={style.headerTitle}>{user.nickname}</h3>
       </div>
       <div className={style.userZone}>
