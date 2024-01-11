@@ -1,19 +1,16 @@
-'use server';
+"use server";
 
-import { redirect } from 'next/navigation';
-import { signIn } from '@/auth';
+import {redirect} from "next/navigation";
+import {signIn} from "@/auth";
 
-const signup = async (prevState: any, formData: FormData) => {
+export default async (prevState: any, formData: FormData) => {
   if (!formData.get('id') || !(formData.get('id') as string)?.trim()) {
     return { message: 'no_id' };
   }
   if (!formData.get('name') || !(formData.get('name') as string)?.trim()) {
     return { message: 'no_name' };
   }
-  if (
-    !formData.get('password') ||
-    !(formData.get('password') as string)?.trim()
-  ) {
+  if (!formData.get('password') || !(formData.get('password') as string)?.trim()) {
     return { message: 'no_password' };
   }
   if (!formData.get('image')) {
@@ -21,25 +18,22 @@ const signup = async (prevState: any, formData: FormData) => {
   }
   let shouldRedirect = false;
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/users`,
-      {
-        method: 'post',
-        body: formData,
-        credentials: 'include',
-      }
-    );
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users`, {
+      method: 'post',
+      body: formData,
+      credentials: 'include',
+    })
     console.log(response.status);
     if (response.status === 403) {
       return { message: 'user_exists' };
     }
-    console.log(await response.json());
+    console.log(await response.json())
     shouldRedirect = true;
-    await signIn('credentials', {
+    await signIn("credentials", {
       username: formData.get('id'),
       password: formData.get('password'),
       redirect: false,
-    });
+    })
   } catch (err) {
     console.error(err);
     return;
@@ -48,6 +42,4 @@ const signup = async (prevState: any, formData: FormData) => {
   if (shouldRedirect) {
     redirect('/home'); // try/catch문 안에서 X
   }
-};
-
-export default signup;
+}

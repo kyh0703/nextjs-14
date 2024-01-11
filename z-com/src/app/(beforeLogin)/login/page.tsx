@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import Main from '@/app/(beforeLogin)/_component/Main';
-import { useSession } from 'next-auth/react';
+import {useRouter} from "next/navigation";
+import Main from "@/app/(beforeLogin)/_component/Main";
+import {useSession} from "next-auth/react";
 
 export default function Login() {
   const router = useRouter();
@@ -14,5 +14,7 @@ export default function Login() {
   }
 
   router.replace('/i/flow/login');
-  return <Main />;
+  return (
+    <Main/>
+  );
 }
