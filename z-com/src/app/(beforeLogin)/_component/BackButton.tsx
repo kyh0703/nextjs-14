@@ -1,18 +1,16 @@
 'use client';
+
 import { useRouter } from 'next/navigation';
 import style from '@/app/(beforeLogin)/_component/signup.module.css';
 
 export default function BackButton() {
   const router = useRouter();
-
-  function onClickcClose(
-    event: MouseEvent<HTMLButtonElement, MouseEvent>
-  ): void {
-    throw new Error('Function not implemented.');
-  }
+  const onClickClose = () => {
+    router.back();
+  };
 
   return (
-    <button className={style.closeButton} onClick={onClickcClose}>
+    <button className={style.closeButton}>
       <svg
         width={24}
         viewBox='0 0 24 24'
