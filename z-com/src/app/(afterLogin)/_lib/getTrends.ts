@@ -1,8 +1,9 @@
 export async function getTrends() {
-  const res = await fetch(`http://localhost:9090/api/trends`, {
+  const res = await fetch(`http://localhost:9090/api/hashtags/trends`, {
     next: {
       tags: ['trends'],
     },
+    credentials: 'include',
     cache: 'no-store',
   });
   // The return value is *not* serialized
@@ -10,8 +11,8 @@ export async function getTrends() {
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
-    throw new Error('Failed to fetch data')
+    throw new Error('Failed to fetch data');
   }
 
-  return res.json()
+  return res.json();
 }

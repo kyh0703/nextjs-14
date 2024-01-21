@@ -1,5 +1,5 @@
 export async function getFollowingPosts() {
-  const res = await fetch(`http://localhost:9090/api/followingPosts`, {
+  const res = await fetch(`http://localhost:9090/api/posts/following`, {
     next: {
       tags: ['posts', 'followings'],
     },
@@ -10,8 +10,8 @@ export async function getFollowingPosts() {
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
-    throw new Error('Failed to fetch data')
+    throw new Error('Failed to fetch data');
   }
 
-  return res.json()
+  return res.json();
 }
