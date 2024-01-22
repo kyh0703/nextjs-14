@@ -249,7 +249,11 @@ export default function ActionButtons({ white, post }: Props) {
   const onClickRepost = () => {};
   const onClickHeart: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation();
-    heart.mutate();
+    if (liked) {
+      unheart.mutate();
+    } else {
+      heart.mutate();
+    }
   };
 
   return (
