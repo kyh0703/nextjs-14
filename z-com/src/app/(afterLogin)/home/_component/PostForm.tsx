@@ -3,6 +3,7 @@
 import {
   ChangeEvent,
   ChangeEventHandler,
+  FormEvent,
   FormEventHandler,
   useRef,
   useState,
@@ -11,7 +12,7 @@ import style from './postForm.module.css';
 import { useSession } from 'next-auth/react';
 import { Session } from 'next-auth';
 import TextAutoSize from 'react-textarea-autosize';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Post } from '@/model/Post';
 
 type Props = {
@@ -26,31 +27,23 @@ export default function PostForm({ me }: Props) {
   const [content, setContent] = useState('');
   const queryClient = useQueryClient();
 
-  const onChange: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
-    setContent(e.target.value);
-  };
-
-  const handleSubmit: FormEventHandler = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('content', content);
-    preview.forEach((p) => {
-      p && formData.append('images', p.file);
-    });
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          body: formData,
-        }
-      );
-      if (response.status === 201) {
-        setContent('');
-        setPreview([]);
-        const newPost = await response.json();
+  const mutation = useMutation({
+    mutationFn: async (e: FormEvent) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('content', content);
+      preview.forEach((p) => {
+        p && formData.append('images', p.file);
+      });
+      return fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+    },
+    async onSuccess(response) {
+      const newPost = await response.json();
+      if (queryClient.getQueryData(['posts', 'recommends'])) {
         queryClient.setQueryData(
           ['posts', 'recommends'],
           (prevData: { pages: Post[][] }) => {
@@ -63,6 +56,8 @@ export default function PostForm({ me }: Props) {
             return shallow;
           }
         );
+      }
+      if (queryClient.getQueryData(['posts', 'followings'])) {
         queryClient.setQueryData(
           ['posts', 'followings'],
           (prevData: { pages: Post[][] }) => {
@@ -76,9 +71,15 @@ export default function PostForm({ me }: Props) {
           }
         );
       }
-    } catch (err) {
+    },
+    onError(error) {
+      console.log(error);
       alert("Couldn't upload post");
-    }
+    },
+  });
+
+  const onChange: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
+    setContent(e.target.value);
   };
 
   const onClickButton = () => {
@@ -114,7 +115,7 @@ export default function PostForm({ me }: Props) {
   };
 
   return (
-    <form className={style.postForm} onSubmit={handleSubmit}>
+    <form className={style.postForm} onSubmit={mutation.mutate}>
       <div className={style.postUserSection}>
         <div className={style.postUserImage}>
           <img
