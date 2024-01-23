@@ -9,10 +9,22 @@ import UserInfo from '@/app/(afterLogin)/[username]/_component/UserInfo';
 import { getUserServer } from '@/app/(afterLogin)/[username]/_lib/getUserServer';
 import { getUserPosts } from '@/app/(afterLogin)/[username]/_lib/getUserPosts';
 import { auth } from '@/auth';
+import { User } from '@/model/User';
+
+export async function generateMetadata({ params }: Props) {
+  const user: User = await getUserServer({
+    queryKey: ['users', params.username],
+  });
+  return {
+    title: `${user.nickname} (@${user.id})`,
+    description: `${user.nickname} (@${user.id})`,
+  };
+}
 
 type Props = {
   params: { username: string };
 };
+
 export default async function Profile({ params }: Props) {
   const { username } = params;
   const session = await auth();

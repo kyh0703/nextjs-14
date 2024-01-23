@@ -245,8 +245,41 @@ export default function ActionButtons({ white, post }: Props) {
     },
     onSettled() {},
   });
-  const onClickComment = () => {};
-  const onClickRepost = () => {};
+
+  const onClickComment: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.stopPropagation();
+
+    // modalStore.setMode('comment');
+    // modalStore.setData(post);
+    // router.push('/compose/tweet');
+    const formData = new FormData();
+    formData.append('content', '답글 테스트');
+    fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/${post.postId}/comments`,
+      {
+        method: 'post',
+        credentials: 'include',
+        body: formData,
+      }
+    );
+  };
+
+  const onClickRepost: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.stopPropagation();
+    if (!reposted) {
+      const formData = new FormData();
+      formData.append('content', '리포스트 테스트');
+      fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/${post.postId}/reposts`,
+        {
+          method: 'post',
+          credentials: 'include',
+          body: formData,
+        }
+      );
+    }
+  };
+
   const onClickHeart: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation();
     if (liked) {

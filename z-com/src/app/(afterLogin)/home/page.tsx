@@ -9,6 +9,11 @@ import TabDeciderSuspense from '@/app/(afterLogin)/home/_component/TabDeciderSus
 import { useSession } from 'next-auth/react';
 import { auth } from '@/auth';
 
+export const Metadata = {
+  title: '홈 / Z,',
+  description: '홈',
+};
+
 export default async function Home() {
   const session = await auth();
 
