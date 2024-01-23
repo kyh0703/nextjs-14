@@ -9,12 +9,14 @@ import BackButton from '@/app/(afterLogin)/_component/BackButton';
 import { User } from '@/model/User';
 import { getUser } from '@/app/(afterLogin)/[username]/_lib/getUser';
 import { MouseEventHandler } from 'react';
+import { Session } from 'next-auth';
 
 type Props = {
   username: string;
+  session: Session | null;
 };
-export default function UserInfo({ username }: Props) {
-  const { data: session } = useSession();
+
+export default function UserInfo({ username, session }: Props) {
   const { data: user, error } = useQuery<
     User,
     Object,
@@ -50,7 +52,7 @@ export default function UserInfo({ username }: Props) {
           const shallow = [...value];
           shallow[index] = {
             ...shallow[index],
-            Followers: [{ userId: session?.user?.email as string }],
+            Followers: [{ id: session?.user?.email as string }],
             _count: {
               ...shallow[index]._count,
               Followers: shallow[index]._count?.Followers + 1,
@@ -88,7 +90,7 @@ export default function UserInfo({ username }: Props) {
           shallow[index] = {
             ...shallow[index],
             Followers: shallow[index].Followers.filter(
-              (v) => v.userId !== session?.user?.email
+              (v) => v.id !== session?.user?.email
             ),
             _count: {
               ...shallow[index]._count,
@@ -106,7 +108,7 @@ export default function UserInfo({ username }: Props) {
         const shallow = {
           ...value2,
           Followers: value2.Followers.filter(
-            (v) => v.userId !== session?.user?.email
+            (v) => v.id !== session?.user?.email
           ),
           _count: {
             ...value2._count,
@@ -141,7 +143,7 @@ export default function UserInfo({ username }: Props) {
           shallow[index] = {
             ...shallow[index],
             Followers: shallow[index].Followers.filter(
-              (v) => v.userId !== session?.user?.email
+              (v) => v.id !== session?.user?.email
             ),
             _count: {
               ...shallow[index]._count,
@@ -159,7 +161,7 @@ export default function UserInfo({ username }: Props) {
         const shallow = {
           ...value2,
           Followers: value2.Followers.filter(
-            (v) => v.userId !== session?.user?.email
+            (v) => v.id !== session?.user?.email
           ),
           _count: {
             ...value2._count,
@@ -181,7 +183,7 @@ export default function UserInfo({ username }: Props) {
           const shallow = [...value];
           shallow[index] = {
             ...shallow[index],
-            Followers: [{ userId: session?.user?.email as string }],
+            Followers: [{ id: session?.user?.email as string }],
             _count: {
               ...shallow[index]._count,
               Followers: shallow[index]._count?.Followers + 1,
@@ -240,9 +242,7 @@ export default function UserInfo({ username }: Props) {
     return null;
   }
 
-  const followed = user.Followers?.find(
-    (v) => v.userId === session?.user?.email
-  );
+  const followed = user.Followers?.find((v) => v.id === session?.user?.email);
 
   const handleFollow: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation();
@@ -281,6 +281,7 @@ export default function UserInfo({ username }: Props) {
         </div>
         <div className={style.userRow}>
           <div>{user._count.Followers} 팔로워</div>
+          &nbsp;
           <div>{user._count.Followings} 팔로우 중</div>
         </div>
       </div>

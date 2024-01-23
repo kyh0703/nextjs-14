@@ -33,6 +33,13 @@
 .userRow {
   display: flex;
   flex-direction: row;
+  align-items: center;
+}
+
+.userRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
 }
 
 .userImage {

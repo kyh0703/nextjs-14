@@ -1,16 +1,18 @@
-import { QueryFunction } from '@tanstack/query-core';
+import { QueryFunction } from '@tanstack/react-query';
 import { User } from '@/model/User';
 import { cookies } from 'next/headers';
 
-export const getUser: QueryFunction<User, [_1: string, _2: string]> = async ({
-  queryKey,
-}) => {
+export const getUserServer: QueryFunction<
+  User,
+  [_1: string, _2: string]
+> = async ({ queryKey }) => {
   const [_1, username] = queryKey;
   const res = await fetch(`http://localhost:9090/api/users/${username}`, {
     next: {
       tags: ['users', username],
     },
     credentials: 'include',
+    headers: { Cookie: cookies().toString() },
     cache: 'no-store',
   });
   // The return value is *not* serialized
