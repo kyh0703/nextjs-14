@@ -18,6 +18,17 @@ export async function generateMetadata({ params }: Props) {
   return {
     title: `${user.nickname} (@${user.id})`,
     description: `${user.nickname} (@${user.id})`,
+    openGraph: {
+      title: `${user.nickname} (@${user.id})`,
+      description: `${user.nickname} (@${user.id})`,
+      images: [
+        {
+          url: `https://z.com/api/image/${user.image}`,
+          width: 400,
+          height: 400,
+        },
+      ],
+    },
   };
 }
 
